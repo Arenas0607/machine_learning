@@ -1,0 +1,22 @@
+# .gitignore
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+*.vscode/
+*.idea/
+*.sublime-workspace
+*.sublime-project
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.tmp
+*.pkl
+*.h5
+*.csv
+static/confusion_matrix.png
+node_modules/
+*.env
+.env
+
