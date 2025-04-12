@@ -1,0 +1,118 @@
+#ModeloRegresion.py
+import numpy as np
+import pandas as pd
+import joblib
+import os
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+np.random.seed(42)
+n_samples = 500
+
+df = pd.DataFrame({
+    'notas': np.random.uniform(50, 100, n_samples),
+    'asistencia': np.random.uniform(60, 100, n_samples),
+    'participacion': np.random.randint(1, 11, n_samples),
+    'tipo_colegio': np.random.choice([0, 1], n_samples)
+})
+
+df['desercion'] = ((df['notas'] < 65) & (df['asistencia'] < 75) & (df['participacion'] < 4)).astype(int)
+
+
+X = df[['notas', 'asistencia', 'participacion', 'tipo_colegio']]
+y = df['desercion']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+
+joblib.dump(model, "modelo_entrenado.pkl")
+
+
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+def generar_matriz():
+
+ plt.figure(figsize=(5, 4))
+ sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['No Deserta', 'Deserta'], yticklabels=['No Deserta', 'Deserta'])
+ plt.xlabel('Predicción')
+ plt.ylabel('Real')
+ plt.title('Matriz de Confusión')
+
+ ruta_imagen2 = os.path.join("static", "confusion_matrix.png")
+ plt.savefig(ruta_imagen2)
+ plt.close()
+generar_matriz()
+
+print("Modelo cargado:", model)
+print("Coeficientes:", model.coef_)
+print("Intercepto:", model.intercept_)
+
+
+#app.py
+@app.route('/predecir', methods=['GET', 'POST'])
+def predecir():
+    if request.method == 'POST':
+        try:
+            
+            if not all(k in request.form for k in ["notas", "asistencia", "participacion", "tipo_colegio"]):
+                return "Error: Faltan datos en el formulario.", 400
+
+            
+            notas = float(request.form['notas'])
+            asistencia = float(request.form['asistencia'])
+            participacion = int(request.form['participacion'])
+            tipo_colegio = 1 if request.form['tipo_colegio'] == 'Privado' else 0
+
+            
+            if not (0 <= notas <= 100) or not (0 <= asistencia <= 100) or not (1 <= participacion <= 10):
+                return "Error: Valores fuera de rango.", 400
+
+            
+            entrada = np.array([[notas, asistencia, participacion, tipo_colegio]])
+            resultado = modelo_entrenado.predict(entrada)[0]
+            probabilidad = modelo_entrenado.predict_proba(entrada)[0][1]
+
+            ModeloRegresion.generar_matriz()
+
+            return render_template('Desercion.html', 
+                                   resultado=resultado, 
+                                   probabilidad=round(probabilidad, 2), 
+                                   accuracy=round(accuracy, 2), 
+                                   precision=round(precision, 2), 
+                                   recall=round(recall, 2),
+                                   confusion_matrix=True)
+        
+        except ValueError:
+            return render_template('Desercion.html', 
+                                   resultado="Error: Entrada no válida", 
+                                   probabilidad=0, 
+                                   accuracy=round(accuracy, 2), 
+                                   precision=round(precision, 2), 
+                                   recall=round(recall, 2))
+        except Exception as e:
+            return render_template('Desercion.html', 
+                                   resultado=f"Error inesperado: {str(e)}", 
+                                   probabilidad=0, 
+                                   accuracy=round(accuracy, 2), 
+                                   precision=round(precision, 2), 
+                                   recall=round(recall, 2))
+
+    ModeloRegresion.generar_matriz()
+
+    return render_template('Desercion.html', 
+                           resultado=None, 
+                           probabilidad=None, 
+                           accuracy=round(accuracy, 2), 
+                           precision=round(precision, 2), 
+                           recall=round(recall, 2),
+                           confusion_matrix=True)
