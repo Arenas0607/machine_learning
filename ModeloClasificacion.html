@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Reseñas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ModeloClasificacion.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Clasificador de Reseñas de Películas</h1>
+        <p>Análisis de sentimientos usando Naive Bayes</p>
+    </div>
+
+    <div class="tab-container mindmap-container">
+        <!-- Pestañas -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'single' %}active{% endif %}" 
+                   href="?tab=single">Análisis Individual</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'batch' %}active{% endif %}" 
+                   href="?tab=batch">Procesamiento por Lotes</a>
+            </li>
+        </ul>
+        
+        <!-- Mensajes de error -->
+        {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <!-- Contenido de pestaña individual -->
+        <div id="singleTab" {% if active_tab == 'single' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <form method="post">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Ingrese una reseña:</label>
+                    <textarea class="form-control" name="review_text" rows="4" required>{% if single_result %}{{ single_result.text }}{% endif %}</textarea>
+                </div>
+                <button type="submit" class="btn-view">Analizar</button>
+            </form>
+            
+            {% if single_result %}
+            <div class="result-box">
+                <h3>Resultado del Análisis</h3>
+                <p><strong>Sentimiento:</strong> 
+                    <span class="{% if single_result.prediction == 1 %}positive{% else %}negative{% endif %}">
+                        {{ "Positivo" if single_result.prediction == 1 else "Negativo" }}
+                    </span>
+                </p>
+                <p><strong>Palabras positivas:</strong> {{ single_result.features[0] }}</p>
+                <p><strong>Palabras negativas:</strong> {{ single_result.features[1] }}</p>
+                <p><strong>Longitud:</strong> {{ single_result.features[2] }} palabras</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Contenido de pestaña batch -->
+        <div id="batchTab" {% if active_tab == 'batch' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <form method="post" enctype="multipart/form-data">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Subir archivo Excel:</label>
+                    <input class="form-control" type="file" name="file" accept=".xlsx,.xls,.csv" required>
+                    <small style="color: #6c757d;">El archivo debe contener una columna llamada 'review'</small>
+                </div>
+                <button type="submit" class="btn-view">Procesar Archivo</button>
+            </form>
+            
+            {% if batch_results %}
+            <div style="margin-top: 2rem;">
+                <h3>Resultados</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reseña</th>
+                                <th>Palabras Positivas</th>
+                                <th>Palabras Negativas</th>
+                                <th>Longitud</th>
+                                <th>Sentimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in batch_results %}
+                            <tr>
+                                <td>{{ item.review[:50] }}{% if item.review|length > 50 %}...{% endif %}</td>
+                                <td>{{ item.num_pos_words }}</td>
+                                <td>{{ item.num_neg_words }}</td>
+                                <td>{{ item.length_review }}</td>
+                                <td class="{% if item.prediction == 1 %}positive{% else %}negative{% endif %}">
+                                    {{ "Positivo" if item.prediction == 1 else "Negativo" }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if download_link %}
+                <a href="/uploads/{{ download_link }}" download class="btn-view" style="margin-top: 1.5rem;">
+                    Exportar Resultados
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
