@@ -26,4 +26,19 @@ def calcularCosto(edad):
  return round(model.predict([[edad]])[0], 2)
 
 def generar_grafico():
-  if not os.pathexists
+  if not os.pathexists("static"):
+      os.makedirs("static")
+
+      plt.figure(figsize=(8,5))
+      sns.scatterplot(x=datos["edad"], y=datos["Costo_seguro"], label= "Datos", color="red")
+      plt.plot(datos["edad"], model.predict(x), color="blue", linewidth=2, label="LineadeRegresion")
+      plt.xlabel("Edad del conductor")
+      plt.ylabel("Costo del Seguro")
+      plt.title("Regresion Lineal del costo del seguro segun la edad del conductor")
+      plt.legend()
+      plt.grid(True)
+
+
+      ruta_imagen = os.path.join("static", "regresion_lineal.png")
+      plt.savefig(ruta_imagen)
+      plt.close()
