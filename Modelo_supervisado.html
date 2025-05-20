@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Modelos de Clasificación Supervisados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef6f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1e3a8a;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0077b6;
+            flex-wrap: wrap;
+        }
+        nav a {
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        nav a:hover {
+            background-color: #005f86;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .section {
+            display: none;
+            margin-bottom: 50px;
+        }
+        .section.active {
+            display: block;
+        }
+        h2 {
+            color: #0077b6;
+        }
+        p {
+            line-height: 1.6;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #0077b6;
+        }
+        .references {
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .references a {
+            color: #0077b6;
+            text-decoration: none;
+        }
+        .references a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Modelos de Clasificación Supervisados</h1>
+    </header>
+
+    <nav>
+        <a onclick="showSection('logistica')">Regresión Logística</a>
+        <a onclick="showSection('knn')">KNN</a>
+        <a onclick="showSection('arbol')">Árboles de Decisión</a>
+        <a onclick="showSection('forest')">Random Forest</a>
+        <a onclick="showSection('svm')">SVM</a>
+        <a onclick="showSection('boosting')">Gradient Boosting</a>
+        <a onclick="showSection('bayes')">Naive Bayes</a>
+    </nav>
+
+    <div class="container">
+
+        <div class="section" id="logistica">
+            <h2>Regresión Logística</h2>
+            <p>Es un algoritmo de aprendizaje automático que clasifica datos en dos categorías, es decir, clasificación binaria. Es útil para predecir la probabilidad de una variable dependiente categórica, este resultado es de naturaleza dicotómica. Utiliza la función logística (sigmoidea) como función de enlace para convertir valores continuos en probabilidades entre 0 y 1. La función logit es su inversa, útil para interpretar la relación entre variables y resultados. La pérdida logarítmica (o entropía cruzada) mide la diferencia entre predicciones y valores reales. El modelo se entrena con algoritmos como el descenso de gradiente o la estimación de máxima verosimilitud.</p>
+            <img src="{{ url_for('static', filename='RegresionL.png') }}" alt="Regresión Logística">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://www-grammarly-com.translate.goog/blog/ai/what-is-logistic-regression/?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc#4" target="_blank">Wikipedia</a>
+            </div>
+        </div>
+
+        <div class="section" id="knn">
+            <h2>K-Nearest Neighbors (KNN)</h2>
+            <p>El algoritmo de k vecinos más cercanos es un clasificador de aprendizaje supervisado no paramétrico, emplea la proximidad para realizar clasificaciones o predicciones sobre la agrupación de un punto de datos individuales, partiendo del supuesto de que se pueden encontrar puntos similares cerca uno del otro. Se alimenta con sets de datos de entrenamiento de memoria. Depende de estos datos de entrada etiquetados para aprender una función que produzca una salida adecuada cuando se le dan nuevos datos sin etiquetar. Clasifica un dato nuevo buscando los K puntos más cercanos a él en el conjunto de entrenamiento. Luego, asigna la clase más común entre esos K vecinos. La cercanía se mide usualmente con la distancia euclidiana, y el valor de K influye en la precisión del modelo; si K es muy bajo, puede ser sensible al ruido; si es muy alto, puede suavizar demasiado las predicciones.</p>
+            <img src="{{ url_for('static', filename='KNearest.png') }}" alt="KNN">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://datascientest.com/es/que-es-el-algoritmo-knn" target="_blank">DataScientest</a>
+            </div>
+        </div>
+
+        <div class="section" id="arbol">
+            <h2>Árboles de Decisión</h2>
+            <p>Los árboles de decisión son modelos predictivos que dividen los datos en función de características específicas, creando una estructura jerárquica. Son fáciles de interpretar, pues muestran decisiones en forma de nodos y ramas. Además, pueden manejar tanto variables numéricas como categóricas, y son útiles para clasificación y regresión. Cada nodo representa una condición, y las ramas llevan a nuevos nodos o a una decisión final. El árbol se recorre desde la raíz hasta una hoja para tomar una decisión clara y fácil de interpretar.</p>
+            <img src="{{ url_for('static', filename='Arboles.png') }}" alt="Árboles de Decisión">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://www.maximaformacion.es/blog-dat/que-son-los-arboles-de-decision-y-para-que-sirven/" target="_blank">Máxima Formación</a>
+            </div>
+        </div>
+
+        <div class="section" id="forest">
+            <h2>Random Forest</h2>
+            <p>Aunque los árboles de decisión son algoritmos populares en el aprendizaje supervisado, pueden tener inconvenientes como el sesgo y el sobreajuste. No obstante, al combinar múltiples árboles en un modelo de bosque aleatorio, se mejora la precisión de las predicciones, especialmente cuando los árboles individuales no están correlacionados entre sí. Cada árbol se entrena en un subconjunto de la serie de datos y da un resultado. Posteriormente, se combinan los resultados de todos los árboles de decisión para dar una respuesta final. Cada árbol “vota” (sí o no) y la respuesta final es la que tenga la mayoría de los votos.</p>
+            <img src="{{ url_for('static', filename='RandomF.png') }}" alt="Random Forest">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://datascientest.com/es/random-forest-bosque-aleatorio-definicion-y-funcionamiento" target="_blank">DataScientest</a>
+            </div>
+        </div>
+
+        <div class="section" id="svm">
+            <h2>Support Vector Machine (SVM)</h2>
+            <p>SVM opera proyectando los datos a un espacio de características de alta dimensión, permitiendo clasificarlos incluso cuando no son separables linealmente en su forma original. En este nuevo espacio, se identifica un separador entre las clases, representado por un hiperplano. Luego, este modelo puede utilizar las características de nuevos datos para predecir a qué grupo pertenecen. Gracias a su capacidad para manejar datos complejos, SVM se utiliza ampliamente en tareas como clasificación de texto, reconocimiento de imágenes y detección de fraudes. Su rendimiento depende de la elección del kernel y los parámetros de regularización, los cuales deben ajustarse cuidadosamente. Aunque puede ser computacionalmente costoso con grandes volúmenes de datos, ofrece una alta precisión cuando se entrena adecuadamente.</p>
+            <img src="{{ url_for('static', filename='SVM.jpg') }}" alt="SVM">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://cienciadedatos.net/documentos/34_maquinas_de_vector_soporte_support_vector_machines" target="_blank">Ciencia de Datos</a>
+            </div>
+        </div>
+
+        <div class="section" id="boosting">
+            <h2>Gradient Boosting</h2>
+            <p>A diferencia de los modelos tradicionales que aprenden de los datos de forma independiente, la potenciación combina las predicciones de múltiples aprendices débiles para crear un único aprendiz fuerte más preciso. Gradient Boosting es un algoritmo de aprendizaje supervisado que construye modelos de manera secuencial, donde cada nuevo árbol corrige los errores del modelo anterior aprendiendo sobre los residuos. Utiliza el descenso del gradiente para minimizar una función de pérdida, combinando múltiples modelos débiles (como árboles de decisión) en un modelo fuerte. Sus principales características son su alta precisión, capacidad para manejar datos no lineales y su flexibilidad para tareas de clasificación y regresión. Sin embargo, puede ser propenso al sobreajuste si no se ajustan bien parámetros como la tasa de aprendizaje, el número de árboles y su profundidad.</p>
+            <img src="{{ url_for('static', filename='GB.png') }}" alt="Gradient Boosting">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://www.datacamp.com/es/tutorial/guide-to-the-gradient-boosting-algorithm" target="_blank">DataCamp</a>
+            </div>
+        </div>
+
+        <div class="section" id="bayes">
+            <h2>Naive Bayes</h2>
+            <p>Naive Bayes es un método de clasificación que se basa en aplicar la probabilidad para predecir a qué grupo pertenece un nuevo dato, considerando cómo se comportan sus características en los datos ya conocidos. Parte del supuesto de que cada característica influye de forma independiente en el resultado final, lo que simplifica mucho los cálculos. A pesar de esta suposición poco realista, suele obtener buenos resultados, especialmente en tareas como clasificación de correos o análisis de opiniones. Es un modelo sencillo, rápido y eficaz, especialmente útil cuando se trabaja con grandes cantidades de información.</p>
+            <img src="{{ url_for('static', filename='Naive.png') }}" alt="Naive Bayes">
+            <div class="references">
+                <strong>Fuente:</strong> <a href="https://www.ibm.com/mx-es/think/topics/naive-bayes" target="_blank">IBM</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showSection(id) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            const selectedSection = document.getElementById(id);
+            selectedSection.classList.add('active');
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            showSection('logistica');
+        });
+    </script>
+</body>
+</html>
