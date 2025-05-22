@@ -1,18 +1,25 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from datetime import datetime
 import re 
 import pandas as pd
 import numpy as np
 import joblib 
 import LinearRegression
-import ModeloRegresion
+import ModeloRegresion as modelo
 from RegresionLogistica import entrenar_modelo
 from ModeloRegresion import accuracy, precision, recall
-import modelos_clasificacion
+from ModeloClasificacion import SentimentAnalyzer
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 modelo_entrenado = joblib.load('modelo_entrenado.pkl')
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Inicializar el analizador de sentimientos
+analyzer = SentimentAnalyzer()
 
 MENU_HTML_BASE = """
 <!DOCTYPE html>
@@ -172,24 +179,73 @@ def predecir():
                            recall=round(recall, 2),
                            confusion_matrix=True)
 
-@app.route("/modelos")
-def modelos():
-    # Asegúrate de que la base de datos esté inicializada
-    modelos_clasificacion.init_db()
-    
-    # Obtener todos los modelos de clasificación de la base de datos
-    modelos = modelos_clasificacion.get_all_modelos()
-    
-    # Renderizar el HTML y pasar los modelos como variable
-    return render_template("modelos_supervisados.html", modelos=modelos)
+@app.route('/clasificador', methods=['GET', 'POST'])
+def clasificador():
+    active_tab = request.args.get('tab', 'single')
+    error = None
+    single_result = None
+    batch_results = None
+    download_link = None
 
+    if request.method == 'POST':
+        if active_tab == 'single':
+            review_text = request.form.get('review_text')
+            if review_text:
+                single_result = analyzer.predict(review_text)
+        else:
+            if 'file' not in request.files:
+                error = 'No se seleccionó ningún archivo'
+            else:
+                file = request.files['file']
+                if file.filename == '':
+                    error = 'No se seleccionó ningún archivo'
+                else:
+                    try:
+                        filename = secure_filename(file.filename)
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        file.save(filepath)
+                        
+                        if filename.endswith(('.xlsx', '.xls')):
+                            df = pd.read_excel(filepath)
+                        else:
+                            df = pd.read_csv(filepath)
+                        
+                        results = []
+                        for review in df['review']:
+                            result = analyzer.predict(review)
+                            results.append({
+                                'review': review,
+                                'prediction': result['prediction'],
+                                'num_pos_words': result['features'][0],
+                                'num_neg_words': result['features'][1],
+                                'length_review': result['features'][2]
+                            })
+                        
+                        batch_results = results
+                        
+                        results_df = pd.DataFrame(results)
+                        output_filename = f"results_{filename}"
+                        output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
+                        results_df.to_excel(output_path, index=False)
+                        download_link = output_filename
+                        
+                    except Exception as e:
+                        error = f"Error al procesar el archivo: {str(e)}"
+
+    return render_template('ModeloClasificacion.html',
+                         active_tab=active_tab,
+                         error=error,
+                         single_result=single_result,
+                         batch_results=batch_results,
+                         download_link=download_link)
+
+@app.route('/uploads/<filename>')
+def download_file(filename):
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename),
+                    as_attachment=True)
 
 
 if __name__ == "__main__":
-    # Asegurarse de que la base de datos está inicializada antes de arrancar la app
-    print("Inicializando base de datos...")
-    modelos_clasificacion.init_db()
-    print("Base de datos inicializada correctamente")
-    
-    # Iniciar la aplicación Flask
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
