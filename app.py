@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, send_file
 from datetime import datetime
 import re 
 import pandas as pd
-import numpy as np
 import joblib 
 import LinearRegression
 import os
@@ -102,24 +101,51 @@ def hello_there(name):
 def pagina():
     return render_template("pagina.html")
 
-@app.route("/LinearRegression", methods=['GET', 'POST'])
+@app.route("/LinearRegression", methods= ["GET", "POST"])
 def inicio():
     prediccion = None
     if request.method == "POST":
-        try:
-            edad = float(request.form["edad"])
-            prediccion = LinearRegression.calcularCosto(edad)
-        except ValueError:
-            prediccion = "Datos no válidos"
+     try:
+        edad = float(request.form["edad"])
+        prediccion = LinearRegression.calcularCosto(edad)
+     except ValueError:
+        prediccion = "Datos no validos"
         
-        LinearRegression.generar_grafico()
-    
-    return render_template("LinearRegressionGrades.html", result=prediccion)
+    LinearRegression.generar_grafico()
+    return render_template("LinearRegressionGrades.html", result = prediccion)
 
 @app.route('/RegresionLogistica')
-def regresion_logistica():
-    precision = entrenar_modelo()
-    return render_template('RegresionLogistica.html', precision=precision)
+def RegresionLogistica():
+    return render_template('RegresionLogistica.html') 
+
+@app.route('/desercion', methods=['POST', 'GET'])
+def desercion():
+    if request.method == 'POST':
+
+        datos = {
+            'notas': float(request.form.get('notas')),
+            'asistencia': float(request.form.get('asistencia')),
+            'participacion': int(request.form.get('participacion')),
+            'tipo_colegio': 0 if request.form.get('tipo_colegio') == 'Publico' else 1
+        }
+        
+        resultado = modelo.predecir_con_matriz(datos)
+        
+        return render_template('Desercion.html', 
+                             datos=datos,
+                             probabilidad=resultado['probabilidad'],
+                             resultado=resultado['resultado'],
+                             accuracy=resultado['accuracy'],
+                             precision=resultado['precision'],
+                             recall=resultado['recall'])
+    else:
+        return render_template('Desercion.html', 
+                             datos=None, 
+                             probabilidad="0%", 
+                             resultado="", 
+                             accuracy=0.0, 
+                             precision=0.0, 
+                             recall=0.0)
 
 @app.route('/predecir', methods=['GET', 'POST'])
 def predecir():
@@ -144,7 +170,7 @@ def predecir():
             probabilidad = modelo_entrenado.predict_proba(entrada)[0][1]
 
           
-            ModeloRegresion.generar_matriz()
+            modelo.generar_matriz()
 
             return render_template('Desercion.html', 
                                    resultado=resultado, 
@@ -169,7 +195,7 @@ def predecir():
                                    precision=round(precision, 2), 
                                    recall=round(recall, 2))
     
-    ModeloRegresion.generar_matriz()
+    modelo.generar_matriz()
 
     return render_template('Desercion.html', 
                            resultado=None, 

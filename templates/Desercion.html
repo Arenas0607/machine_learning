@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Predicción</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Desercion.css') }}">
+</head>
+
+<body>
+    <div class="header">
+        <h1>Predicción de Deserción</h1>
+        <p>Modelo de Regresión Logística - Sector Educación</p>
+    </div>
+    
+    <div class="container">
+        <form action="/desercion" method="POST">
+            <label for="notas">Notas:</label>
+            <input type="number" step="0.01" name="notas" id="notas" required>
+            
+            <label for="asistencia">Asistencia (%):</label>
+            <input type="number" step="0.01" name="asistencia" id="asistencia" required>
+            
+            <label for="participacion">Participación (1-5):</label>
+            <input type="number" name="participacion" id="participacion" required>
+            
+            <label for="tipo_colegio">Tipo de Colegio:</label>
+            <select name="tipo_colegio" id="tipo_colegio" required>
+                <option value="Publico">Público</option>
+                <option value="Privado">Privado</option>
+            </select>
+            
+            <button type="submit">Predecir</button>
+        </form>
+    </div>
+    
+    <div class="result-container">
+        <!-- Tarjeta de Predicción -->
+        <div class="prediction-card {% if resultado and 'Riesgo' in resultado %}risk{% endif %}">
+            <h2 class="dark-text">Análisis del Estudiante</h2>
+            <p><strong>Notas:</strong> <span class="data-highlight">{{ datos.notas if datos.notas is not none else 'N/A' }}</span> | 
+               <strong>Asistencia:</strong> <span class="data-highlight">{{ datos.asistencia if datos.asistencia is not none else 'N/A' }}%</span> | 
+               <strong>Participación:</strong> <span class="data-highlight">{{ datos.participacion if datos.participacion is not none else 'N/A' }}/5</span> | 
+               <strong>Colegio:</strong> <span class="data-highlight">{% if datos.tipo_colegio == 0 %}Público{% else %}Privado{% endif %}</span></p>
+            
+            <div class="text-center" style="margin: 2rem 0;">
+                <h3 class="dark-text">Probabilidad de Deserción</h3>
+                <div class="probability-display {% if 'Riesgo' in resultado %}risk-display{% endif %}">{{ probabilidad }}</div>
+                <h3 style="margin-top: 0.5rem;">{{ resultado }}</h3>
+            </div>
+        </div>
+
+        <!-- Métricas del Modelo -->
+        <h2 class="dark-text text-center" style="margin-bottom: 1.5rem;">Evaluación del Modelo</h2>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h4>Accuracy</h4>
+                <p class="metric-value">{{ "%.2f"|format(accuracy if accuracy is not none else 0.0) }}</p>
+                <p class="gray-text">Exactitud general del modelo</p>
+            </div>
+            <div class="metric-card">
+                <h4>Precision</h4>
+                <p class="metric-value">{{ "%.2f"|format(precision if precision is not none else 0.0) }}</p>
+                <p class="gray-text">Verdaderos positivos / Predicciones positivas</p>
+            </div>
+            <div class="metric-card">
+                <h4>Recall</h4>
+                <p class="metric-value">{{ "%.2f"|format(recall if recall is not none else 0.0) }}</p>
+                <p class="gray-text">Verdaderos positivos / Reales positivos</p>
+            </div>
+        </div>
+
+        <!-- Matriz de Confusión -->
+        <div class="confusion-matrix">
+            <h3 class="dark-text">Matriz de Confusión</h3>
+            <img src="{{ url_for('static', filename='img/matriz_confusion.png') }}" alt="Matriz de Confusión" class="confusion-img">
+            <p class="gray-text" style="margin-top: 1rem;">Comparación entre predicciones y valores reales</p>
+        </div>
+
+    </div>
+</body>
+</html>
