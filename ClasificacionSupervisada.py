@@ -1,5 +1,3 @@
-Integracion del modelo de clasificacion con Flask, para clasificar reseñas de peliculas
-
 from flask import Flask, render_template, request, send_file
 from datetime import datetime
 import re
