@@ -35,7 +35,6 @@
     </div>
     
     <div class="result-container">
-        <!-- Tarjeta de Predicción -->
         <div class="prediction-card {% if resultado and 'Riesgo' in resultado %}risk{% endif %}">
             <h2 class="dark-text">Análisis del Estudiante</h2>
             <p><strong>Notas:</strong> <span class="data-highlight">{{ datos.notas if datos.notas is not none else 'N/A' }}</span> | 
@@ -70,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Matriz de Confusión -->
         <div class="confusion-matrix">
             <h3 class="dark-text">Matriz de Confusión</h3>
             <img src="{{ url_for('static', filename='img/matriz_confusion.png') }}" alt="Matriz de Confusión" class="confusion-img">

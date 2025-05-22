@@ -6,7 +6,6 @@ import joblib
 import LinearRegression
 import os
 import ModeloRegresion as modelo
-from ModeloRegresion import accuracy, precision, recall
 from ModeloClasificacion import SentimentAnalyzer
 from werkzeug.utils import secure_filename
 
