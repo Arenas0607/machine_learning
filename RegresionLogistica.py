@@ -57,7 +57,6 @@ print("Coeficientes:", model.coef_)
 print("Intercepto:", model.intercept_)
 
 
-#app.py
 @app.route('/predecir', methods=['GET', 'POST'])
 def predecir():
     if request.method == 'POST':
