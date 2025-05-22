@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 import joblib 
 import LinearRegression
+import os
 import ModeloRegresion as modelo
-from RegresionLogistica import entrenar_modelo
 from ModeloRegresion import accuracy, precision, recall
 from ModeloClasificacion import SentimentAnalyzer
 from werkzeug.utils import secure_filename
