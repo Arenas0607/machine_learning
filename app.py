@@ -78,7 +78,7 @@ MENU_HTML_BASE = """
         <a href="/pagina" class="opcion">Página HTML</a>
         <a href="/LinearRegression" class="opcion">Regresión Lineal</a>
         <a href="/RegresionLogistica" class="opcion">Regresión Logística</a>
-        <a href="/predecir" class="opcion">Modelo Regresion</a>
+        <a href="/desercion" class="opcion">Modelo Regresion</a>
         <a href="/modelos" class="opcion">Modelos de Clasificación Supervisados</a>
     </div>
 </body>

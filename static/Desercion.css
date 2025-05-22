@@ -1,0 +1,181 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background: #6a11cb;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin: 0 auto 2rem;
+    max-width: 600px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #2f3542;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #6a11cb;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #2575fc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    color: white;
+}
+
+.result-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin: 0 auto 2rem;
+    max-width: 900px;
+}
+
+.prediction-card {
+    border-left: 4px solid #2ed573;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.risk {
+    border-left-color: #ff4757;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.confusion-matrix {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 2rem auto;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 600px;
+}
+
+.confusion-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.probability-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2ed573;
+    margin: 1rem 0;
+}
+
+.risk-display {
+    color: #ff4757;
+}
+
+.btn-view {
+    background: #6a11cb;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-view:hover {
+    background: #2575fc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    color: white;
+}
+
+.data-highlight {
+    background-color: #e3f2fd;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.dark-text {
+    color: #2f3542;
+}
+
+.gray-text {
+    color: #7f8c8d;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #6a11cb;
+}
+
+@media (max-width: 768px) {
+    .result-container {
+        padding: 1rem;
+    }
+    
+    .probability-display {
+        font-size: 2rem;
+    }
+}
